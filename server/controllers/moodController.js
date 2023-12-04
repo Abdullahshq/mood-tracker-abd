@@ -1,50 +1,67 @@
-// moodController.js
+const asyncHandler = require('express-async-handler');
 
-const getMood = (req, res, next) => {
+const Mood = require('../models/moodModel');
+
+const getMood = asyncHandler(async (req, res, next) => {
     try {
-        // Logic to retrieve moods goes here
+        let query = {};
 
-        console.log('Query parameters:', req.query);
-        res.status(200).json({ message: 'Moods retrieved successfully' });
+        if (req.query.date) {
+            const date = new Date(req.query.date);
+            date.setHours(0, 0, 0, 0); 
+
+            const nextDay = new Date(date);
+            nextDay.setDate(date.getDate() + 1); 
+
+           
+            query.date = { $gte: date, $lt: nextDay };
+        }
+
+        const moods = await Mood.find(query);
+
+        res.status(200).json(moods);
     } catch (error) {
-        error.status = 500; // Internal Server Error
         next(error);
     }
-};
+});
 
-const postMood = (req, res, next) => {
+const postMood = asyncHandler(async (req, res, next) => {
     try {
-        const { mood, date } = req.body;
+        const { moodEmoji, moodValue, date } = req.body;
 
-        if (!mood || !date) {
-            const err = new Error('Both mood and date are required.');
-            err.status = 400; // Bad Request
+        if (!moodEmoji || !moodValue || !date) {
+            const err = new Error('Mood emoji, mood value, and date are required.');
+            err.status = 400;
             throw err;
         }
 
-        // Logic to save the mood goes here
+        const newMood = await Mood.create({ moodEmoji, moodValue, date });
 
-        console.log('Received mood:', mood, 'on date:', date);
-        res.status(201).json({ message: 'Mood saved successfully' });
+        res.status(201).json(newMood);
     } catch (error) {
         next(error);
     }
-};
+});
 
-const deleteMood = (req, res, next) => {
+
+const deleteMood = asyncHandler(async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        // Validate the ID or include logic to check if the mood exists
-        // Logic to delete the mood goes here
+        // Use findByIdAndDelete
+        const mood = await Mood.findByIdAndDelete(id);
 
-        console.log('Deleting mood with ID:', id);
+        if (!mood) {
+            res.status(404);
+            throw new Error('Mood not found');
+        }
+
         res.status(200).json({ message: `Mood with ID ${id} deleted successfully` });
     } catch (error) {
-        error.status = 500; // Internal Server Error
         next(error);
     }
-};
+});
+
 
 module.exports = {
     getMood,
