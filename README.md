@@ -1,6 +1,6 @@
 # Emotisphere Mood Tracker
 
-<img src="https://img4.garnek.pl/a.garnek.pl/037/652/37652416_800.0.jpg/zdjecie.jpg" alt="Image Description" height="600" width="600"/>
+<img src="https://img4.garnek.pl/a.garnek.pl/037/652/37652416_800.0.jpg/zdjecie.jpg" alt="Image Description" height="600" width="900"/>
 
 
 ## Overview
