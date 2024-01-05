@@ -32,10 +32,14 @@ cd mood-tracker
 
 
 ## Backend Setup
-Navigate to the backend directory and set it up:
 
-cd server
-npm install
+To get the backend server running:
+
+1. **Navigate to the backend directory:**
+   ```bash
+   cd server
+   npm install
+   npm run server
 
 ### Create a .env file in the backend directory with the following content:
 MONGO_URI=your_mongodb_uri
