@@ -1,4 +1,7 @@
-# Emotisphere Application
+# Emotisphere Mood Tracker
+
+<img src="https://img4.garnek.pl/a.garnek.pl/037/652/37652416_800.0.jpg/zdjecie.jpg" alt="Image Description" width="300"/>
+
 
 ## Overview
 Emotisphere is a comprehensive mood tracking application allowing users to register, log in, and track their daily moods. It uses the MERN stack (MongoDB, Express.js, React, Node.js) and offers features like user authentication, RESTful APIs, and interactive data visualization.
