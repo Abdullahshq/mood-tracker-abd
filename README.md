@@ -26,13 +26,14 @@ Emotisphere is a comprehensive mood tracking application allowing users to regis
 - MongoDB
 
 ### Clone the Repository
-```bash
+
 git clone https://github.com/your-username/mood-tracker.git
 cd mood-tracker
 
+
 ## Backend Setup
 Navigate to the backend directory and set it up:
-```bash
+
 cd server
 npm install
 
