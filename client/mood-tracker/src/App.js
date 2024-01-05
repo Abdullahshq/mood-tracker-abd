@@ -1,64 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import AddMood from './AddMood'; 
-import './App.css'; 
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import PasswordResetRequest from './pages/PasswordResetRequest'; 
+import ResetPassword from './pages/ResetPassword'; 
+import Header from './components/Header';
+import Entries from './components/Entries';
+import MoodStatistics from './components/MoodStatistics';
+import './styles/App.css';
 
 function App() {
-  const [moods, setMoods] = useState([]);
-  const [filterDate, setFilterDate] = useState('');
-
-  useEffect(() => {
-    axios.get('http://localhost:5000/api/moods')
-      .then(response => {
-        setMoods(response.data);
-      })
-      .catch(error => console.error(error));
-  }, []);
-
-  const handleMoodAdded = (newMood) => {
-    console.log('Mood added:', newMood);
-  };
-
-  const fetchMoodsByDate = () => {
-    axios.get(`http://localhost:5000/api/moods?date=${filterDate}`)
-      .then(response => {
-        setMoods(response.data);
-      })
-      .catch(error => console.error(error));
-  };
-
-  const deleteMood = (id) => {
-    axios.delete(`http://localhost:5000/api/moods/${id}`)
-      .then(() => {
-        setMoods(moods.filter(mood => mood._id !== id));
-      })
-      .catch(error => console.error(error));
-  };
-
-  return (
-    <div>
-      <h1>Mood Tracker</h1>
-
-      <AddMood onMoodAdded={handleMoodAdded} />
-
-      <div className="centered-content">
-        <form onSubmit={(e) => { e.preventDefault(); fetchMoodsByDate(); }} className="form-element">
-          <label>
-            Filter Date:
-            <input type="date" value={filterDate} onChange={e => setFilterDate(e.target.value)} />
-          </label>
-          <button type="submit">Get Moods</button>
-        </form>
-        </div>
-        
-      {moods.map(mood => (
-        <div key={mood._id}>
-          {mood.moodEmoji} - {new Date(mood.date).toLocaleDateString()}
-          <button onClick={() => deleteMood(mood._id)}>Delete</button>
-        </div>
-      ))}
-    </div>
-  );
+    return (
+        <>
+            <Router>
+                <div className="container">
+                    <Header />
+                    <Routes>
+                        <Route path="/" element={<Dashboard />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/reset-password" element={<PasswordResetRequest />} /> 
+                        <Route path="/reset-password/:token" element={<ResetPassword />} />
+                        <Route path="/mood-statistics" element={<MoodStatistics />} />
+                        <Route path="/entries" element={<Entries />} />
+                    </Routes>             
+                </div>
+            </Router>
+            <ToastContainer />
+        </>
+    );
 }
 
+
 export default App;
+

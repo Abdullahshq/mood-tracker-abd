@@ -1,0 +1,143 @@
+.auth-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    height: 100vh;
+}
+
+.form-container {
+    flex: 1;
+    padding: 20px;
+}
+
+.image-container {
+    flex: 1;
+    padding: 20px;
+    text-align: center;
+}
+
+.image-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+/* For Registration Component */
+.reverse {
+    flex-direction: row-reverse;
+}
+
+
+.registration-link {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.registration-link a {
+    text-decoration: none;
+    color: #727877; 
+    transition: color 0.3s; 
+    border-bottom: 1px solid transparent; 
+}
+
+.registration-link a:hover {
+    color: #f28e77;
+    border-color: #f5a897; 
+}
+
+.reset-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/*Password reset */
+
+.panel-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    text-align: center;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 10px;
+}
+
+.panel-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    background: #000;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    appearance: button;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .btn svg {
+    margin-right: 8px;
+  }
+  
+  .btn-reverse {
+    background: #fff;
+    color: #000;
+  }
+  
+  .btn-block {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .btn:hover {
+    transform: scale(0.98);
+  }
+
+  .input-field {
+    margin-top: 50px;
+    width: 100%;
+    padding: 9px 20px; 
+    margin-bottom: 20px; 
+    border: 1px solid #000; 
+    border-radius: 5px; 
+    font-size: 16px; 
+}
+
+.input-field-change-password {
+    width: 100%;
+    padding: 9px 20px; 
+    margin-bottom: 20px; 
+    border: 1px solid #000; 
+    border-radius: 5px; 
+    font-size: 16px; 
+}
+
+.Toastify__toast-icon {
+    font-size: 16px;
+  }
+
+  .Toastify__toast-icon {
+	
+	width: 40px;
+	height: 40px;
+	margin-left: 80px;
+   }
+
+   .Toastify{
+	display: flex;
+   align-items: center;
+   justify-content: center;
+   }
+

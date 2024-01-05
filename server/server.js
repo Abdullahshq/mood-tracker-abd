@@ -22,6 +22,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/moods', require('./routes/moodsRoutes'));
+app.use('/api/users', require('./routes/userRoutes'));
 
 app.use(errorHandler);
 
