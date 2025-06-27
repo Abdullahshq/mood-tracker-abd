@@ -36,21 +36,17 @@ const startServer = async () => {
     app.use(express.urlencoded({ extended: true }));
     app.use(cors());
 
+    // Routes
+    app.use('/api/moods', require('./routes/moodsRoutes'));
+    app.use('/api/users', require('./routes/userRoutes'));
+
     // Serve static files from the React build
     app.use(express.static(path.join(__dirname, 'public')));
-
-    app.get('/', (req, res) => {
-      res.send('Welcome to the Mood Tracker API!');
-    });
 
     // For any route not handled by your API, serve the React index.html
     app.get('*', (req, res) => {
       res.sendFile(path.join(__dirname, 'public', 'index.html'));
     });
-
-    // Routes
-    app.use('/api/moods', require('./routes/moodsRoutes'));
-    app.use('/api/users', require('./routes/userRoutes'));
 
     app.use(errorHandler);
 
