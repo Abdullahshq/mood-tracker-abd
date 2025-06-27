@@ -17,23 +17,23 @@ function Header() {
 	return (
 		<header className='header'>
 			<div className='logo'>
-				<Link to='/'>Emotisphere</Link>
+				<Link to='/'>MoodSphere</Link>
 			</div>
 			<ul>
 				{user ? (
 					<>
-					 <li>
-                            <Link to='/entries'>Entries</Link> {/* Link text is "Entries" */}
-                        </li>
-					<li>
-						<Link to='/mood-statistics'> Statistics</Link>
-					</li>
-					<li>
-						<button className='btn' onClick={onLogout}>
-							<FaSignOutAlt /> Logout
-						</button>
-					</li>
-				</>
+						<li>
+							<Link to='/entries'>Entries</Link>
+						</li>
+						<li>
+							<Link to='/mood-statistics'>Statistics</Link>
+						</li>
+						<li>
+							<button className='btn' onClick={onLogout}>
+								<FaSignOutAlt /> Logout
+							</button>
+						</li>
+					</>
 				) : (
 					<>
 						<li>

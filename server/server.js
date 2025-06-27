@@ -1,34 +1,58 @@
-const express = require('express');
 const dotenv = require('dotenv').config();
+const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const port = process.env.PORT || 5000;
-const {errorHandler} = require('./middleware/errorMiddleware')
+const { errorHandler } = require('./middleware/errorMiddleware');
 const colors = require('colors');
-const { connectDB } = require('./config/db');
+const db = require('./models');
+const passport = require('passport');
 
-// Connect to database
-connectDB();
+// Check if JWT_SECRET is loaded
+if (!process.env.JWT_SECRET) {
+  console.error('FATAL ERROR: JWT_SECRET is not defined in .env file.'.red.bold);
+  process.exit(1);
+}
 
-const app = express();
+const startServer = async () => {
+  try {
+    // Connect to and sync database
+    await db.sequelize.authenticate();
+    console.log('Database connection has been established successfully.'.cyan.underline.bold);
+    
+    // Sync database models
+    await db.sequelize.sync({ alter: true });
+    
+    console.log('Models synchronized with database.'.cyan);
 
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+    // Initialize Express app
+    const app = express();
 
-app.use(cors());
+    // Passport middleware
+    app.use(passport.initialize());
+    require('./config/passport')(passport);
 
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+    app.use(cors());
 
-app.get('/', (req, res) => {
-  res.send('Welcome to the Mood Tracker API!');
-});
+    app.get('/', (req, res) => {
+      res.send('Welcome to the Mood Tracker API!');
+    });
 
-app.use('/api/moods', require('./routes/moodsRoutes'));
-app.use('/api/users', require('./routes/userRoutes'));
+    // Routes
+    app.use('/api/moods', require('./routes/moodsRoutes'));
+    app.use('/api/users', require('./routes/userRoutes'));
 
-app.use(errorHandler);
+    app.use(errorHandler);
 
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}.`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:'.red.bold, error);
+    process.exit(1);
+  }
+};
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
-});
+startServer();

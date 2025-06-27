@@ -1,8 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import moodService from './moodService';
-import axios from 'axios';
-
-const API_URL = '/api/moods/';
 
 const initialState = {
   moods: [],
@@ -17,11 +14,12 @@ export const createMood = createAsyncThunk(
   'moods/create',
   async (moodData, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.user.token;
-      return await moodService.createMood(moodData, token);
+      return await moodService.createMood(moodData);
     } catch (error) {
       const message =
-        (error.response && error.response.data && error.response.data.message) ||
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
         error.message ||
         error.toString();
       return thunkAPI.rejectWithValue(message);
@@ -34,11 +32,12 @@ export const getMoods = createAsyncThunk(
   'moods/getAll',
   async (_, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.user.token;
-      return await moodService.getMoods(token);
+      return await moodService.getMoods();
     } catch (error) {
       const message =
-        (error.response && error.response.data && error.response.data.message) ||
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
         error.message ||
         error.toString();
       return thunkAPI.rejectWithValue(message);
@@ -51,17 +50,12 @@ export const getMoodsByDate = createAsyncThunk(
   'moods/getByDate',
   async (date, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.user.token;
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const response = await axios.get(`${API_URL}?date=${date}`, config);
-      return response.data;
+      return await moodService.getMoodsByDate(date);
     } catch (error) {
       const message =
-        (error.response && error.response.data && error.response.data.message) ||
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
         error.message ||
         error.toString();
       return thunkAPI.rejectWithValue(message);
@@ -74,12 +68,13 @@ export const deleteMood = createAsyncThunk(
   'moods/delete',
   async (id, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.user.token;
-      await moodService.deleteMood(id, token);
+      await moodService.deleteMood(id);
       return id;
     } catch (error) {
       const message =
-        (error.response && error.response.data && error.response.data.message) ||
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
         error.message ||
         error.toString();
       return thunkAPI.rejectWithValue(message);
@@ -87,22 +82,17 @@ export const deleteMood = createAsyncThunk(
   }
 );
 
-
 // Fetch moods by week
 export const getMoodsByWeek = createAsyncThunk(
   'moods/getByWeek',
   async ({ startDate, endDate }, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.user.token;
-      const response = await axios.get(`${API_URL}?startDate=${startDate}&endDate=${endDate}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.data;
+      return await moodService.getMoodsByWeek({ startDate, endDate });
     } catch (error) {
       const message =
-        (error.response && error.response.data && error.response.data.message) ||
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
         error.message ||
         error.toString();
       return thunkAPI.rejectWithValue(message);
@@ -115,16 +105,12 @@ export const getMoodsByMonth = createAsyncThunk(
   'moods/getByMonth',
   async ({ startDate, endDate }, thunkAPI) => {
     try {
-      const token = thunkAPI.getState().auth.user.token;
-      const response = await axios.get(`${API_URL}?startDate=${startDate}&endDate=${endDate}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.data;
+      return await moodService.getMoodsByMonth({ startDate, endDate });
     } catch (error) {
       const message =
-        (error.response && error.response.data && error.response.data.message) ||
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
         error.message ||
         error.toString();
       return thunkAPI.rejectWithValue(message);
@@ -185,7 +171,9 @@ export const moodSlice = createSlice({
       .addCase(deleteMood.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.moods = state.moods.filter((mood) => mood._id !== action.payload);
+        state.moods = state.moods.filter(
+          (mood) => mood.id !== action.payload
+        );
       })
       .addCase(deleteMood.rejected, (state, action) => {
         state.isLoading = false;

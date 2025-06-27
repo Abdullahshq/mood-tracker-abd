@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/db');
 
+module.exports = (sequelize) => {
 const User = sequelize.define('User', {
     name: {
         type: DataTypes.STRING,
@@ -12,7 +12,6 @@ const User = sequelize.define('User', {
     email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
         validate: {
             notEmpty: { msg: 'Please add an email' },
             isEmail: { msg: 'Please add a valid email' }
@@ -34,7 +33,21 @@ const User = sequelize.define('User', {
         allowNull: true
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    indexes: [
+        {
+            unique: true,
+            fields: ['email']
+        }
+    ]
 });
 
-module.exports = User;
+    User.associate = (models) => {
+        User.hasMany(models.Mood, {
+            foreignKey: 'userId',
+            as: 'moods',
+        });
+    };
+
+    return User;
+};

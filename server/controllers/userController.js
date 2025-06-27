@@ -1,11 +1,10 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
-const User = require('../models/userModel');
+const { User, Op } = require('../models');
 const express = require('express');
 const app = express();
 const nodemailer = require('nodemailer');
-require('dotenv').config();
 const crypto = require('crypto');
 
 app.use(express.json());
@@ -17,25 +16,18 @@ app.use(express.json());
 const registerUser = asyncHandler(async (req, res) => {
 	const { name, email, password } = req.body;
 	if (!name || !email || !password) {
-		res.status(400);
-		throw new Error('Please fill all the fields');
+		res.status(400).send('Please provide all required fields');
+		return;
 	}
 
-	const userExists = await User.findOne({ email });
-
-	//Checking if user already exists
-
+	const userExists = await User.findOne({ where: { email } });
 	if (userExists) {
-		res.status(400);
-		throw new Error('User already exists');
+		res.status(400).send('User with that email already exists');
+		return;
 	}
-
-	//Hashing the password
 
 	const salt = await bcrypt.genSalt(10);
 	const hashedPassword = await bcrypt.hash(password, salt);
-
-	//Creating a new user
 
 	const user = await User.create({
 		name,
@@ -43,42 +35,43 @@ const registerUser = asyncHandler(async (req, res) => {
 		password: hashedPassword,
 	});
 
-	if (user) {
+	if (user && user.id) {
 		res.status(201).json({
-			_id: user.id,
+			id: user.id,
 			name: user.name,
 			email: user.email,
-			token: generateToken(user._id),
+			token: generateToken(user.id),
 		});
 	} else {
-		res.status(400);
-		throw new Error('Invalid user data');
+		res.status(400).send('Invalid user data, failed to create user');
 	}
 });
 
-//@desc Authentica a user
+//@desc Authenticate a user
 //@route POST /api/users/login
 //@access Public
 
 const loginUser = asyncHandler(async (req, res) => {
 	const { email, password } = req.body;
-
-	//Check for user email
-	const user = await User.findOne({ email });
-
-	if (user && (await bcrypt.compare(password, user.password))) {
-		res.json({
-			_id: user.id,
-			name: user.name,
-			email: user.email,
-			token: generateToken(user._id),
-		});
-	} else {
-		res.status(401);
-		throw new Error('Invalid email or password');
+	if (!email || !password) {
+		res.status(400).send('Please provide email and password');
+		return;
 	}
 
-	res.json({ message: 'Login User' });
+	const user = await User.findOne({ where: { email } });
+
+	const passwordIsValid = user ? await bcrypt.compare(password, user.password) : false;
+
+	if (user && passwordIsValid) {
+		res.status(200).json({
+			id: user.id,
+			name: user.name,
+			email: user.email,
+			token: generateToken(user.id),
+		});
+	} else {
+		res.status(401).send('Invalid email or password');
+	}
 });
 
 //@desc Get user data
@@ -111,29 +104,22 @@ const transporter = nodemailer.createTransport({
 
 // Function to send emails
 const sendEmail = asyncHandler(async (mailOptions) => {
-	try {
 		await transporter.sendMail(mailOptions);
-	} catch (error) {
-		throw new Error('Error sending email: ' + error.message);
-	}
 });
 
 // Reset Password Request Handler
 const resetPasswordRequest = asyncHandler(async (req, res) => {
 	const { email } = req.body;
-	const user = await User.findOne({ email });
+	const user = await User.findOne({ where: { email } });
 
 	if (!user) {
-		res.status(404);
-		throw new Error('User not found');
+		res.status(404).json({ message: 'User not found' });
+		return;
 	}
 
 	const resetToken = crypto.randomBytes(20).toString('hex');
-
-	const resetTokenExpires = Date.now() + 3600000;
-
 	user.resetPasswordToken = resetToken;
-	user.resetPasswordExpires = resetTokenExpires;
+	user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
 
 	await user.save();
 
@@ -141,22 +127,7 @@ const resetPasswordRequest = asyncHandler(async (req, res) => {
 		from: { name: 'Emotisphere', address: process.env.GMAIL_EMAIL },
 		to: email,
 		subject: 'Password Reset Request',
-		html: `<h1>Emotisphere Password Reset</h1>
-        <p>We received a request to reset the password for your Emotisphere account associated with this email address.</p>
-
-        <p>This link will expire in 24 hours for security purposes.</p>
-        
-        <p>If you did not request a password reset, please disregard this email. No changes will be made to your account. If you are concerned about your account's security, please contact our support team immediately at emotisphere@gmail.com.</p>
-        
-        <p>Please use the following link to reset your password:</p>
-               <a href="http://localhost:3000/reset-password/${resetToken}">Reset Password</a>
-               
-               <p>For your security, please ensure that your new password is unique and not used for any other online accounts.</p>
-
-        <p>Thank you for using Emotisphere. We're committed to ensuring the best security and experience for our users.</p>
-
-        <p>Best regards,
-        <br> Emotisphere Support Team</p>`,
+		html: `<p>Please use the following link to reset your password:</p><a href="http://localhost:3000/reset-password/${resetToken}">Reset Password</a>`,
 	};
 
 	await sendEmail(mailOptions);
@@ -168,20 +139,20 @@ const resetPassword = asyncHandler(async (req, res) => {
 	const { token, password } = req.body;
 
 	const user = await User.findOne({
+		where: {
 		resetPasswordToken: token,
-		resetPasswordExpires: { $gt: Date.now() },
+			resetPasswordExpires: { [Op.gt]: Date.now() },
+		}
 	});
 
 	if (!user) {
-		res.status(400);
-		throw new Error('Invalid or expired password reset token');
+		res.status(400).json({ message: 'Invalid or expired password reset token' });
+		return;
 	}
 
-	// Hash the new password
 	const salt = await bcrypt.genSalt(10);
 	const hashedPassword = await bcrypt.hash(password, salt);
 
-	// Update the user's password and clear the reset token fields
 	user.password = hashedPassword;
 	user.resetPasswordToken = undefined;
 	user.resetPasswordExpires = undefined;

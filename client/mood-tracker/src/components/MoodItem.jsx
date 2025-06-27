@@ -20,7 +20,7 @@ const MoodItem = ({ mood }) => {
             <span style={{ fontSize: '24px' }}>{mood.moodEmoji}</span>
             <span>{formattedDate}</span>         
             {mood.note && <p className="mood-note">{mood.note}</p>}
-            <button onClick={() => dispatch(deleteMood(mood._id))} className="delete-button">
+            <button onClick={() => dispatch(deleteMood(mood.id))} className="delete-button">
                 <FontAwesomeIcon icon={faTrash} />
             </button>
         </div>

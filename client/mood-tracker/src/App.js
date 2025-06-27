@@ -7,8 +7,8 @@ import Register from './pages/Register';
 import PasswordResetRequest from './pages/PasswordResetRequest'; 
 import ResetPassword from './pages/ResetPassword'; 
 import Header from './components/Header';
-import Entries from './components/Entries';
 import MoodStatistics from './components/MoodStatistics';
+import Entries from './components/Entries';
 import './styles/App.css';
 
 function App() {

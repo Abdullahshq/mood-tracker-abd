@@ -1,48 +1,40 @@
-import axios from 'axios';
+import api from '../../api/api';
 
-const API_URL = '/api/moods/';
+const API_URL = '/moods/';
 
 // Create a new mood
-const createMood = async (moodData, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-  const response = await axios.post(API_URL, moodData, config);
+const createMood = async (moodData) => {
+  const response = await api.post(API_URL, moodData);
   return response.data;
 };
 
 // Get all moods for the current user
-const getMoods = async (token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-  const response = await axios.get(API_URL, config);
+const getMoods = async () => {
+  const response = await api.get(API_URL);
   return response.data;
 };
 
 // Delete a specific mood
-const deleteMood = async (moodId, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-  const response = await axios.delete(`${API_URL}${moodId}`, config);
+const deleteMood = async (moodId) => {
+  const response = await api.delete(`${API_URL}${moodId}`);
   return response.data;
 };
 
 // Fetch moods by date
-const getMoodsByDate = async (date, token) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-  const response = await axios.get(`${API_URL}?date=${date}`, config);
+const getMoodsByDate = async (date) => {
+  const response = await api.get(`${API_URL}date?date=${date}`);
+  return response.data;
+};
+
+// Fetch moods by week
+const getMoodsByWeek = async ({ startDate, endDate }) => {
+  const response = await api.get(`${API_URL}date?startDate=${startDate}&endDate=${endDate}`);
+  return response.data;
+};
+
+// Fetch moods by month
+const getMoodsByMonth = async ({ startDate, endDate }) => {
+  const response = await api.get(`${API_URL}date?startDate=${startDate}&endDate=${endDate}`);
   return response.data;
 };
 
@@ -52,6 +44,8 @@ const moodService = {
   getMoods,
   deleteMood,
   getMoodsByDate,
+  getMoodsByWeek,
+  getMoodsByMonth,
 };
 
 // Export the service object

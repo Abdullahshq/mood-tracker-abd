@@ -20,13 +20,12 @@ const Entries = () => {
     };
 
     useEffect(() => {
-        // Update the entries when moods or selectedDate changes
         const filteredEntries = moods.filter(mood => mood.date.split('T')[0] === selectedDate);
         setEntriesForDate(filteredEntries);
     }, [moods, selectedDate]);
 
     return (
-        <div className="common-style"> {/* Apply the common style class */}
+        <div className="common-style">
             <h2>Entries</h2>
             <div>
                 <label htmlFor="datePicker">Select Date:</label>
@@ -42,7 +41,7 @@ const Entries = () => {
                 <div>
                     <h3>Entries for {selectedDate}</h3>
                     {entriesForDate.map((entry) => (
-                        <div key={entry._id} className="common-style"> {/* Apply the common style class */}
+                        <div key={entry.id} className="common-style">
                             <p>Date: {new Date(entry.date).toLocaleString('en-US', {
                                 year: 'numeric',
                                 month: 'long',
@@ -52,7 +51,7 @@ const Entries = () => {
                             })}</p>
                             <p>Mood Emoji: {entry.moodEmoji}</p>
                             {entry.note && <p>Note: {entry.note}</p>}
-                            <button onClick={() => handleDeleteEntry(entry._id)} className="delete-button">
+                            <button onClick={() => handleDeleteEntry(entry.id)} className="delete-button">
                                 <FontAwesomeIcon icon={faTrash} />
                             </button>
                         </div>
@@ -65,4 +64,4 @@ const Entries = () => {
     );
 };
 
-export default Entries;
+export default Entries; 
