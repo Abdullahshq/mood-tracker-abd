@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getMoodsByDate, getMoodsByWeek } from '../features/moods/moodSlice';
 import '../styles/App.css';
-import { Pie, Line, Bar } from 'react-chartjs-2';
+import { Pie, Bar } from 'react-chartjs-2';
 import {
 	Chart as ChartJS,
 	CategoryScale,
