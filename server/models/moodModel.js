@@ -1,32 +1,43 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
+const User = require('./userModel');
 
-const User = require('./userModel'); 
-
-const moodSchema = new mongoose.Schema({
+const Mood = sequelize.define('Mood', {
     moodEmoji: {
-        type: String,
-        required: true,
-        trim: true
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            notEmpty: true
+        }
     },
     moodValue: {
-        type: Number,
-        required: true
+        type: DataTypes.INTEGER,
+        allowNull: false
     },
     date: {
-        type: Date,
-        default: Date.now
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     },
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+    userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: User,
+            key: 'id'
+        }
     },
-    
     note: {
-        type: String,
-        required: false, // make it optional
-        trim: true
+        type: DataTypes.STRING,
+        allowNull: true
     }
+}, {
+    timestamps: true
 });
+
+// Define the relationship
+Mood.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(Mood, { foreignKey: 'userId' });
+
+module.exports = Mood;
 
 module.exports = mongoose.model('moodModel', moodSchema);
