@@ -6,6 +6,7 @@ const { errorHandler } = require('./middleware/errorMiddleware');
 const colors = require('colors');
 const db = require('./models');
 const passport = require('passport');
+const path = require('path');
 
 // Check if JWT_SECRET is loaded
 if (!process.env.JWT_SECRET) {
@@ -35,8 +36,16 @@ const startServer = async () => {
     app.use(express.urlencoded({ extended: true }));
     app.use(cors());
 
+    // Serve static files from the React build
+    app.use(express.static(path.join(__dirname, 'public')));
+
     app.get('/', (req, res) => {
       res.send('Welcome to the Mood Tracker API!');
+    });
+
+    // For any route not handled by your API, serve the React index.html
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(__dirname, 'public', 'index.html'));
     });
 
     // Routes
