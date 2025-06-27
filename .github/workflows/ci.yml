@@ -95,9 +95,18 @@ jobs:
         with:
           node-version: 20
 
-      - name: Verify frontend build exists in server/public
+      - name: Build frontend (again for deployment)
+        working-directory: client/mood-tracker
         run: |
-          if [ ! -f server/public/index.html ]; then echo "ERROR: index.html not found in server/public. Deployment will fail."; exit 1; fi
+          npm install
+          npm run build
+          if [ ! -f build/index.html ]; then echo "React build failed: index.html not found"; exit 1; fi
+
+      - name: Copy frontend build to backend public (for deployment)
+        run: |
+          rm -rf server/public
+          cp -r client/mood-tracker/build server/public
+          if [ ! -f server/public/index.html ]; then echo "Copy failed: index.html not found in server/public"; exit 1; fi
 
       - name: Login to Azure
         uses: azure/login@v2
