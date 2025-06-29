@@ -1,7 +1,15 @@
 import axios from 'axios';
 
+// Determine the base URL based on the environment
+const isProduction = process.env.NODE_ENV === 'production';
+// Replace this with your actual production URL
+const productionUrl = 'https://abdapp-dxd2ebhrc9f8cwgm.canadacentral-01.azurewebsites.net/api';
+const developmentUrl = '/api'; 
+
+const baseURL = isProduction ? productionUrl : developmentUrl;
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: baseURL,
 });
 
 // This interceptor runs before every request
