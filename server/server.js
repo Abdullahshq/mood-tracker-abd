@@ -46,7 +46,7 @@ const startServer = async () => {
 
     // Serve frontend in production
     if (process.env.NODE_ENV === 'production') {
-        app.use(express.static(path.join(__dirname, 'client', 'mood-tracker', 'build')));
+        app.use(express.static(path.join(__dirname, 'client/mood-tracker/build')));
 
         app.get('*', (req, res) => 
             res.sendFile(path.resolve(__dirname, 'client', 'mood-tracker', 'build', 'index.html'))
