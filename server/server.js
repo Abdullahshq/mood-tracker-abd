@@ -8,6 +8,9 @@ const db = require('./models');
 const passport = require('passport');
 const path = require('path');
 
+// Log the NODE_ENV to debug production build issues
+console.log(`Current NODE_ENV: '${process.env.NODE_ENV}'`);
+
 // Check if JWT_SECRET is loaded
 if (!process.env.JWT_SECRET) {
   console.error('FATAL ERROR: JWT_SECRET is not defined in .env file.'.red.bold);
