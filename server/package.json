@@ -7,7 +7,7 @@
     "start": "node server.js",
     "server": "nodemon server.js",
     "build": "npm install && cd ../client/mood-tracker && npm install && npm run build",
-    "heroku-postbuild": "cd ../client/mood-tracker && npm install && npm run build && cp -a build/. ../../server/public/"
+    "heroku-postbuild": "cd ../client/mood-tracker && npm install && npm run build && mkdir -p ../../server/public && cp -a build/. ../../server/public/"
   },
   "keywords": [],
   "author": "",
