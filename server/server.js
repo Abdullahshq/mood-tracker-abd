@@ -46,18 +46,10 @@ const startServer = async () => {
 
     // Serve frontend in production
     if (process.env.NODE_ENV === 'production') {
-        const buildPath = path.join(__dirname, '../client/mood-tracker/build');
-        const indexPath = path.resolve(__dirname, '../', 'client', 'mood-tracker', 'build', 'index.html');
-
-        console.log(`[Server] Serving static files from: ${buildPath}`);
-        console.log(`[Server] Serving index.html from: ${indexPath}`);
-        console.log(`[Server] __dirname: ${__dirname}`);
-        console.log(`[Server] process.cwd(): ${process.cwd()}`);
-
-        app.use(express.static(buildPath));
+        app.use(express.static(path.join(__dirname, 'client', 'mood-tracker', 'build')));
 
         app.get('*', (req, res) => 
-            res.sendFile(indexPath)
+            res.sendFile(path.resolve(__dirname, 'client', 'mood-tracker', 'build', 'index.html'))
         );
     } else {
         app.get('/', (req, res) => {
