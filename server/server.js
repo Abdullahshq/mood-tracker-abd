@@ -37,17 +37,22 @@ const startServer = async () => {
     app.use(cors());
 
 
-    // Serve static files from the React build
-    app.use(express.static(path.join(__dirname, 'public')));
-
     // API routes
     app.use('/api/moods', require('./routes/moodsRoutes'));
     app.use('/api/users', require('./routes/userRoutes'));
 
-    // For any route not handled by your API, serve the React index.html
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(__dirname, 'public', 'index.html'));
-    });
+    // Serve frontend in production
+    if (process.env.NODE_ENV === 'production') {
+        app.use(express.static(path.join(__dirname, '../client/mood-tracker/build')));
+
+        app.get('*', (req, res) => 
+            res.sendFile(path.resolve(__dirname, '../', 'client', 'mood-tracker', 'build', 'index.html'))
+        );
+    } else {
+        app.get('/', (req, res) => {
+            res.send('API is running...');
+        });
+    }
 
     app.use(errorHandler);
 
