@@ -46,8 +46,10 @@ const startServer = async () => {
 
     // Serve frontend in production
     if (process.env.NODE_ENV === 'production') {
+        // Serve the static files from the 'public' folder
         app.use(express.static(path.join(__dirname, 'public')));
 
+        // For any other request, send the index.html file
         app.get('*', (req, res) => {
             res.sendFile(path.join(__dirname, 'public', 'index.html'));
         });

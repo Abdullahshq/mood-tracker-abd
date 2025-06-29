@@ -6,8 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "server": "nodemon server.js",
-    "build": "npm install && cd ../client/mood-tracker && npm install && npm run build",
-    "heroku-postbuild": "echo 'BUILD SCRIPT: STARTED' && cd ../client/mood-tracker && echo 'BUILD SCRIPT: NAVIGATED TO CLIENT' && npm install && echo 'BUILD SCRIPT: CLIENT NPM INSTALL COMPLETE' && npm run build && echo 'BUILD SCRIPT: CLIENT BUILD COMPLETE' && mkdir -p ../../server/public && echo 'BUILD SCRIPT: PUBLIC DIR CREATED' && cp -a build/. ../../server/public/"
+    "build": "echo 'BUILD SCRIPT: Building client...' && cd ../client/mood-tracker && npm install && npm run build && echo 'BUILD SCRIPT: Client build complete.' && echo 'BUILD SCRIPT: Copying files...' && mkdir -p ../../server/public && cp -a build/. ../../server/public/ && echo 'BUILD SCRIPT: Files copied successfully.'"
   },
   "keywords": [],
   "author": "",
