@@ -11,6 +11,13 @@ const path = require('path');
 // Log the NODE_ENV to debug production build issues
 console.log(`Current NODE_ENV: '${process.env.NODE_ENV}'`);
 
+// ================== TEMPORARY DEBUGGING ==================
+console.log("--- Reading Environment Variables for Debugging ---");
+console.log(`AZURE_SQL_CONNECTIONSTRING: '${process.env.AZURE_SQL_CONNECTIONSTRING}'`);
+console.log(`JWT_SECRET: '${process.env.JWT_SECRET}'`);
+console.log("-------------------------------------------------");
+// =========================================================
+
 // Check if JWT_SECRET is loaded
 if (!process.env.JWT_SECRET) {
   console.error('FATAL ERROR: JWT_SECRET is not defined in .env file.'.red.bold);
